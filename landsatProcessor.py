@@ -67,7 +67,7 @@ def classification(path, image):
     # Count input channels and create input channel list
     with ds.open_dataset(inputfile) as dataset:
         inputChansCount = dataset.chan_count
-    inputChans = range(1,8)                         # Define input channels ((1,7)=channel 1 to channel 6))
+    inputChans = range(1,8)                         # Define input channels (eg: (1,7)=channel 1 to channel 6))
     print inputChans
 
     # Add 3 channels to the image for storing algorithm output
