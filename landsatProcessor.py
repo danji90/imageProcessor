@@ -28,9 +28,9 @@ from pci.api import datasource as ds
 
 
 # (over)write console output to log file
-report = os.getcwd() + "\classReport.txt"
+report = os.getcwd() + "\landsat\classReport.txt"
 if os.path.isfile(report):
-    report = open(report, 'w')
+    os.remove(report)
 
 # Data
 inputFolder = os.getcwd() + "\landsat\input\\"
