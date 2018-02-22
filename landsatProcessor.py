@@ -3,9 +3,7 @@
 # and a sieve and eventually exports the classified raster to an output shape file.
 
 # Packages & libraries
-import os
-import glob
-import time
+import os, glob, time, sys, logging
 from pci.kclus import kclus
 from pci.fmo import *
 from pci.sieve import *
@@ -16,12 +14,32 @@ from pci.his import his
 from pci.nspio import Report, enableDefaultReport
 from pci.api import datasource as ds
 
+
+
+# (over)write console output to log file
+# logfile = os.getcwd() + "\landsatProcessor.log"
+# print logfile
+# if os.path.isfile(logfile):
+#     logfile = open(logfile, 'w')
+# OF = open(logfile, 'w')
+# def printing(text):
+#     print text
+#     OF.write(text + "\n")
+
+
+# (over)write console output to log file
+report = os.getcwd() + "\classReport.txt"
+if os.path.isfile(report):
+    report = open(report, 'w')
+
 # Data
-inputFolder = "D:\Bulk\Uni\uji_data\RS\FinalAss\landsat\input\\"
-outputFolder = "D:\Bulk\Uni\uji_data\RS\FinalAss\landsat\output\\"
+inputFolder = os.getcwd() + "\landsat\input\\"
+outputFolder = os.getcwd() + "\landsat\output\\"
+
+# printing(os.getcwd())
+# printing(inputFolder)
 
 # classification function
-
 def classification(path, image):
 
     print ""
@@ -82,8 +100,12 @@ def classification(path, image):
     moveThresh = [0.01]         # define move threshhold
     print "Running unsupervized k-means classification..."
     print "Creating "+str(classesNumber)+ " classes, applying "+str(iterations)+" iterations at a move-threshhold of "+str(moveThresh)
-
-    kclus( file = inputfile, dbic = inputChans, dboc = [chansCount+1], numclus = classesNumber, maxiter = iterations, movethrs = moveThresh)
+    try:
+        Report.clear()
+        enableDefaultReport(report)
+        kclus( file = inputfile, dbic = inputChans, dboc = [chansCount+1], numclus = classesNumber, maxiter = iterations, movethrs = moveThresh)
+    finally:
+        enableDefaultReport('term')  # this will close the report file
     flag1 = time.time()
     print "Classification complete! Time ellapsed: " + str(flag1 - start) +" seconds"
     print ""
