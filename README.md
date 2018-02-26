@@ -18,12 +18,12 @@ the process easier to follow.
 
 PCI python Algorithm documentation:
 
-..*[PCI Python API reference guide](http://www.pcigeomatics.com/python-api-doc/modules.html)
+..* [PCI Python API reference guide](http://www.pcigeomatics.com/python-api-doc/modules.html)
 
-..*[K-means classification](http://www.pcigeomatics.com/geomatica-help/references/pciFunction_r/python/P_kclus.html )
+..* [K-means classification](http://www.pcigeomatics.com/geomatica-help/references/pciFunction_r/python/P_kclus.html )
 
-..*[Mode Filter](http://www.pcigeomatics.com/geomatica-help/references/pciFunction_r/python/P_fmo.html )
+..* [Mode Filter](http://www.pcigeomatics.com/geomatica-help/references/pciFunction_r/python/P_fmo.html )
 
-..*[Sieve](http://www.pcigeomatics.com/geomatica-help/references/pciFunction_r/python/P_sieve.html )
+..* [Sieve](http://www.pcigeomatics.com/geomatica-help/references/pciFunction_r/python/P_sieve.html )
 
 ..*[Raster to polygon](http://www.pcigeomatics.com/geomatica-help/references/pciFunction_r/python/P_ras2poly.html )
