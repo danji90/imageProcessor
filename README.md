@@ -26,4 +26,4 @@ PCI python Algorithm documentation:
 
   * [Sieve](http://www.pcigeomatics.com/geomatica-help/references/pciFunction_r/python/P_sieve.html )
 
-  *[Raster to polygon](http://www.pcigeomatics.com/geomatica-help/references/pciFunction_r/python/P_ras2poly.html )
+  * [Raster to polygon](http://www.pcigeomatics.com/geomatica-help/references/pciFunction_r/python/P_ras2poly.html )
