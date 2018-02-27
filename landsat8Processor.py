@@ -78,9 +78,35 @@ def classification(path, image):
     print ""
 
     # Run k-means cluster algorithm
-    classesNumber = [8]         # define number of classes
-    iterations = [10]            # define number iterations
-    moveThresh = [0.01]         # define move threshhold
+    def kclusInput():
+        while True:
+            try:
+                classesNumber = [int(raw_input("Define maximum number of classes for clustering: "))]        # define number of classes
+            except:
+                print("Input not accepted! Try again, this time inserting an integer.")
+            else:
+                break
+        while True:
+            try:
+                iterations = [int(raw_input("Define number of iterations (e.g. 10): "))]         # define number of iterations
+            except:
+                print("Input not accepted! Try again, this time inserting an integer.")
+            else:
+                break
+        while True:
+            try:
+                moveThresh = [float(raw_input("Define move threshold (e.g. 0.01): "))]         # define number of move threshold
+            except:
+                print("Does not accept strings")
+            else:
+                break
+        return [classesNumber, iterations, moveThresh]
+
+    variable = kclusInput()
+    classesNumber = variable[0]
+    iterations = variable[1]
+    moveThresh = variable[2]
+
     print "Running unsupervized k-means classification..."
     print "Creating "+str(classesNumber)+ " classes, applying "+str(iterations)+" iterations at a move-threshhold of "+str(moveThresh)
     try:
