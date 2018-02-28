@@ -24,7 +24,7 @@ inputFolder = os.getcwd() + "\landsat\input\\"
 outputFolder = os.getcwd() + "\landsat\output\\"
 
 # classification function
-def classification(path, image):
+def processing(path, image):
 
     print ""
     print "Classifying " + str(image)
@@ -68,54 +68,70 @@ def classification(path, image):
     # Count input channels and create input channel list
     with ds.open_dataset(inputfile) as dataset:
         inputChansCount = dataset.chan_count
-    inputChans = range(2,8)                         # Define input channels (eg: (1,7)=channel 1 to channel 6))
+    inputChans = range(1,8)                         # Define input channels (eg: (1,7)=channel 1 to channel 6))
     print "Input channels: "+str(inputChans)
 
-    # Add 3 channels to the image for storing algorithm output
-    print "Adding three 16-bit channels to image..."
-    pcimod(file=inputfile, pciop='add', pcival=[0, 0, 3, 0, 0, 0])
-    print "Three 16-bit channels added"
-    print ""
+    # k-means cluster algorithm
+    def classification(data):
+        # Add channel
+        pcimod(file=inputfile, pciop='add', pcival=[0, 0, 1, 0, 0, 0])
 
-    # Run k-means cluster algorithm
-    classesNumber = [8]         # define number of classes
-    iterations = [10]            # define number iterations
-    moveThresh = [0.01]         # define move threshhold
-    print "Running unsupervized k-means classification..."
-    print "Creating "+str(classesNumber)+ " classes, applying "+str(iterations)+" iterations at a move-threshhold of "+str(moveThresh)
-    try:
-        Report.clear()
-        enableDefaultReport(report)
-        kclus( file = inputfile, dbic = inputChans, dboc = [chansCount+1], numclus = classesNumber, maxiter = iterations, movethrs = moveThresh)
-    finally:
-        enableDefaultReport('term')  # this will close the report file
-    flag1 = time.time()
-    print "Classification complete! Time elapsed: " + str(flag1 - start) +" seconds"
-    print ""
+        # Define input parameters
+        classesNumber = [8]         # define number of classes
+        iterations = [10]            # define number iterations
+        moveThresh = [0.01]         # define move threshhold
 
-    # Run mode filter
-    print "Running Mode Filter..."
-    filter = [5,5]
-    fmo(file = inputfile, dbic = [chansCount+1], dboc = [chansCount+2], thinline = "OFF", flsz = filter)
-    flag2 = time.time()
-    print "Filtering complete! Time elapsed: " + str(flag2 - start) +" seconds"
-    print ""
+        print "Running unsupervized k-means classification..."
+        print "Creating "+str(classesNumber)+ " classes, applying "+str(iterations)+" iterations at a move-threshhold of "+str(moveThresh)
 
-    # Run sieve
-    print "Applying sieve..."
-    sieve(file = inputfile, dbic = [chansCount+2], dboc = [chansCount+3], sthresh = [32])
-    flag3 = time.time()
-    print "Sieve complete! Time elapsed: " + str(flag3 - start) +" seconds"
-    print ""
+        # Run algorithm and create classification report
+        try:
+            Report.clear()
+            enableDefaultReport(report)
+            kclus( file = inputfile, dbic = inputChans, dboc = [chansCount+1], numclus = classesNumber, maxiter = iterations, movethrs = moveThresh)
+        finally:
+            enableDefaultReport('term')  # this will close the report file
+        flag1 = time.time()
+        print "Classification complete! Time elapsed: " + str(flag1 - start) +" seconds"
+        print ""
+
+    # Mode filter
+    def FMO(data):
+        # Add channel
+        pcimod(file=inputfile, pciop='add', pcival=[0, 0, 1, 0, 0, 0])
+        print "Running Mode Filter..."
+        filter = [5,5]
+        # Run algorithm
+        fmo(file = inputfile, dbic = [chansCount+1], dboc = [chansCount+2], thinline = "OFF", flsz = filter)
+        flag2 = time.time()
+        print "Filtering complete! Time elapsed: " + str(flag2 - start) +" seconds"
+        print ""
+
+    # Sieve
+    def SIEVE(data):
+        # Add channel
+        pcimod(file=inputfile, pciop='add', pcival=[0, 0, 1, 0, 0, 0])
+        print "Applying sieve..."
+        # Run algorithm
+        sieve(file = inputfile, dbic = [chansCount+2], dboc = [chansCount+3], sthresh = [32])
+        flag3 = time.time()
+        print "Sieve complete! Time elapsed: " + str(flag3 - start) +" seconds"
+        print ""
 
     # Create vector ploygons and export as shape file
-    print "Creating polygons..."
-    ras2poly(fili = inputfile, dbic = [chansCount+3], filo = output, ftype = "SHP")
-    flag4 = time.time()
-    print "Polygons created! Time elapsed: " + str(flag4 - start) +" seconds"
-    print ""
+    def RAS2POLY(data):
+        print "Creating polygons..."
+        ras2poly(fili = inputfile, dbic = [chansCount+3], filo = output, ftype = "SHP")
+        flag4 = time.time()
+        print "Polygons created! Time elapsed: " + str(flag4 - start) +" seconds"
+        print ""
 
-    print "Exporting as shape file..."
+        print "Exporting as shape file..."
+
+    classification(image)
+    FMO(image)
+    SIEVE(image)
+    RAS2POLY(image)
 
     end = time.time()
     print "Processing time elapsed for "+image+": " + str(end - start) + " seconds"
@@ -126,7 +142,7 @@ start = time.time()
 
 for file in os.listdir(inputFolder):
     if file.endswith(".pix"):
-        classification(inputFolder, file);
+        processing(inputFolder, file);
 
 end = time.time()
 
